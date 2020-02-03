@@ -2,12 +2,12 @@ import cv2
 import numpy as np
 
 # load masking image
-imgMaskSrc = '../img/imp_image/mask_2_2.png'
+imgMaskSrc = '../img/imp_image/mask2.png'
 imgMask = cv2.imread(imgMaskSrc)
 imgMaskGray = cv2.cvtColor(imgMask, cv2.COLOR_BGR2GRAY)
 
 # load depth image
-imgDepthSrc = '../img/imp_image/img_norm2.png'
+imgDepthSrc = '../img/imp_image/img_norm_2.png'
 imgDepth = cv2.imread(imgDepthSrc)
 imgDepthGray = cv2.cvtColor(imgDepth, cv2.COLOR_BGR2GRAY)
 
@@ -40,7 +40,7 @@ for i, xy in enumerate(maskCoordinates):
 newMaskArray[:, -1] = maskColList
 # print(newMaskArray)
 
-# Get max, min, median values
+# # Get max, min, median values
 print('---Masked---')
 print("mean: %d" % np.mean(maskColList))
 print("std: %d" % np.std(maskColList))
@@ -67,7 +67,7 @@ for i, xy in enumerate(unMaskCoordinates):
 newUnMaskArray[:, -1] = unMaskColList
 # print(newMaskArray)
 
-# Get max, min, median values
+# # Get max, min, median values
 print('---unMasked---')
 print("mean: %d" % np.mean(unMaskColList))
 print("std: %d" % np.std(unMaskColList))
@@ -75,17 +75,31 @@ print("median: %d" % np.median(unMaskColList))
 print("min: %d" % np.min(unMaskColList))
 print("max: %d" % np.max(unMaskColList))
 
+# instance 중앙값보다 같거나 높은 위치의 fix rate
+# medianValue = np.mean(maskColList)
+medianValue = 80.0
+boolMedian = np.array(unMaskColList) <= medianValue
+# boolMedian = unMaskColList <= np.std(unMaskColList)
+# print(boolMedian)
+cntTrue = np.sum(boolMedian)
+rateMedian = cntTrue / len(unMaskColList)
 
+print('median, cntTrue, rateMedian: ', np.median(maskColList), cntTrue, rateMedian)
 
-# import cv2
-# import numpy as np
-#
-# cap = cv2.imread('/home/PATH/TO/IMAGE/IMG_0835.jpg')
-# #You're free to do a resize or not, just for the example
-# cap = cv2.resize(cap, (340,480))
-# for x in range (0,340,1):
-#     for y in range(0,480,1):
-#         color = cap[y,x]
-#         print color
+# visualization
+# cv2.imshow('imgDepth', imgDepth)
+# cv2.waitKey(0)
+
+for i, t in enumerate(boolMedian):
+    if t:
+        x, y = unMaskCoordinates[i, :]
+        imgDepth[x, y] = [0, 255, 0]
+        # break
+
+cv2.imwrite('../img/imp_image/detect_2.png', imgDepth)
+
+# cv2.imshow('imgDepth_dots', imgDepth)
+# cv2.waitKey(0)
+
 
 print('end')
