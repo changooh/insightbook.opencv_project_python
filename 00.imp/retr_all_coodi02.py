@@ -2,14 +2,18 @@ import cv2
 import numpy as np
 
 # load masking image
-imgMaskSrc = '../img/imp_image/mask2.png'
+imgMaskSrc = '../img/imp_image/sample01/result_mask_1.png'
 imgMask = cv2.imread(imgMaskSrc)
 imgMaskGray = cv2.cvtColor(imgMask, cv2.COLOR_BGR2GRAY)
 
 # load depth image
-imgDepthSrc = '../img/imp_image/img_norm_2.png'
+imgDepthSrc = '../img/imp_image/sample01/result_norm_1.png'
 imgDepth = cv2.imread(imgDepthSrc)
 imgDepthGray = cv2.cvtColor(imgDepth, cv2.COLOR_BGR2GRAY)
+
+# load object image
+imgRgbSrc = '../img/imp_image/sample01/result_rbg_1.png'
+imgRgb = cv2.imread(imgRgbSrc)
 
 # Mask area coordinates
 maskIndices = np.where(imgMaskGray == [255])
@@ -76,9 +80,10 @@ print("min: %d" % np.min(unMaskColList))
 print("max: %d" % np.max(unMaskColList))
 
 # instance 중앙값보다 같거나 높은 위치의 fix rate
-# medianValue = np.mean(maskColList)
-medianValue = 80.0
-boolMedian = np.array(unMaskColList) <= medianValue
+medianValue = np.median(maskColList)
+# medianValue = medianValue + 10.0
+# boolMedian = np.array(unMaskColList) <= medianValue
+boolMedian = np.array(unMaskColList) > medianValue
 # boolMedian = unMaskColList <= np.std(unMaskColList)
 # print(boolMedian)
 cntTrue = np.sum(boolMedian)
@@ -94,12 +99,16 @@ for i, t in enumerate(boolMedian):
     if t:
         x, y = unMaskCoordinates[i, :]
         imgDepth[x, y] = [0, 255, 0]
+        imgRgb[x, y] = [0, 255, 0]
+
         # break
+    else:
+        x, y = unMaskCoordinates[i, :]
+        imgDepth[x, y] = [0, 0, 255]
+        imgRgb[x, y] = [0, 0, 255]
 
-cv2.imwrite('../img/imp_image/detect_2.png', imgDepth)
-
-# cv2.imshow('imgDepth_dots', imgDepth)
-# cv2.waitKey(0)
+cv2.imwrite('../img/imp_image/sample01/result_detect_1.png', imgDepth)
+cv2.imwrite('../img/imp_image/sample01/result_rgb_detect_1.png', imgRgb)
 
 
 print('end')

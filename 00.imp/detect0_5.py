@@ -1,13 +1,17 @@
 import cv2
 import numpy as np
+# fixed rbg
+img_fix = "../img/imp_image/sample01/fixed_raw.jpg"
+img0 = cv2.imread(img_fix)
 
-img_fix = "../img/imp_image/01_17_16_29_34_fixed_raw.jpg"
-img_src03 = '../img/imp_image/01_17_16_29_34_fixed_mask_0.png'
+# fixed depth map
+img9 = cv2.imread('../img/imp_image/sample01/depth_fixed_raw.png', -1)
+
+# masked instance
+img_src03 = '../img/imp_image/sample01/fixed_mask_1.png'
 # 이미지 읽어서 그레이스케일 변환, 바이너리 스케일 변환
 img = cv2.imread(img_src03)
-img0 = cv2.imread(img_fix)
 img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
 # binary threshold
 ret, th = cv2.threshold(img_gray, 200, 255, cv2.THRESH_BINARY)
 # cv2.imshow("threshold", th)
@@ -38,16 +42,16 @@ contr = contours[0]
 x, y, w, h = cv2.boundingRect(contr)
 
 # print coordinates 1280 533 1359 616
-print(w, h)
-print("inner coordinates: ", x, y, x + w, y + h)
+# print(w, h)
+# print("inner coordinates: ", x, y, x + w, y + h)
 # draw rectangle
 # cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 1)
 
 # # rotate rectangle
-rect = cv2.minAreaRect(contr)
-box = cv2.boxPoints(rect)
-box = np.int0(box)
-cv2.drawContours(img, [box], 0, (0, 255, 0), 1)
+# rect = cv2.minAreaRect(contr)
+# box = cv2.boxPoints(rect)
+# box = np.int0(box)
+# cv2.drawContours(img, [box], 0, (0, 255, 0), 1)
 
 # draw outer bounding box (blue)
 # px 확대
@@ -63,20 +67,20 @@ print("outer coordinates: ", x_outer01, y_outer01, x_outer02, y_outer02)
 
 roi = img[y_outer01:y_outer02, x_outer01:x_outer02]  # instance mask roi 지정
 img2 = roi.copy()  # roi array 복제 ---①
-cv2.imwrite('../img/imp_image/mask0.png', img2)
+cv2.imwrite('../img/imp_image/sample01/result_mask_1.png', img2)
 
 roi0 = img0[y_outer01:y_outer02, x_outer01:x_outer02]  # raw image roi 지정
 # print(roi0.shape)
 
 img00 = roi0.copy()  # roi array copy ---①
-cv2.imwrite('../img/imp_image/mask_org_0.png', img00)
+cv2.imwrite('../img/imp_image/sample01/result_rbg_1.png', img00)
 
 # instance depth roi
-img9 = cv2.imread('../img/imp_image/01_17_16_29_34_fix.png', -1)
+
 roi = img9[y_outer01:y_outer02, x_outer01:x_outer02]  # depth roi 지정
 img3 = roi.copy()  # roi array 복제 ---①
 # print(img2)
-# cv2.imwrite('../img/imp_image/fix60.png', img*60)
+# cv2.imwrite('../img/imp_image/sample01/result_depth_60.png', img*60)
 
 # --② 직접 연산한 정규화
 # img_f = img2.astype(np.float32)
@@ -112,7 +116,7 @@ v_median = np.median(blur)
 # cv2.rectangle(blur, (px, px), (px + w, px + h), (0, 0, 0), 1)
 # 결과 출력
 # merged = np.hstack((img_norm2, blur, blur2))
-cv2.imwrite('../img/imp_image/img_norm_0.png', img_norm1)
+cv2.imwrite('../img/imp_image/sample01/result_norm_1.png', img_norm1)
 # cv2.imwrite('../img/imp_image/img_norm2_3.png', img_norm2)
 # cv2.imwrite('../img/imp_image/img_media_2.png', blur)
 
