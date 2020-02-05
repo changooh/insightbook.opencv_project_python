@@ -1,9 +1,10 @@
 import cv2
 import numpy as np
-import matplotlib.pylab as plt
+# import matplotlib.pylab as plt
 
 #--① 대상 영상으로 그레이 스케일로 읽기
-img = cv2.imread('../img/yate.jpg', cv2.IMREAD_GRAYSCALE)
+# img = cv2.imread('../img/yate.jpg', cv2.IMREAD_GRAYSCALE)
+img = cv2.imread('../img/imp_image/01_17_16_29_34_fix.png', cv2.IMREAD_GRAYSCALE)
 rows, cols = img.shape[:2]
 
 #--② 이퀄라이즈 연산을 직접 적용
@@ -26,9 +27,13 @@ hist3 = cv2.calcHist([img3], [0], None, [256], [0, 256])
 cv2.imshow('Before', img)
 cv2.imshow('Manual', img2)
 cv2.imshow('cv2.equalizeHist()', img3)
-hists = {'Before':hist, 'Manual':hist2, 'cv2.equalizeHist()':hist3}
-for i, (k, v) in enumerate(hists.items()):
-    plt.subplot(1,3,i+1)
-    plt.title(k)
-    plt.plot(v)
-plt.show()
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# hists = {'Before':hist, 'Manual':hist2, 'cv2.equalizeHist()':hist3}
+# for i, (k, v) in enumerate(hists.items()):
+#     plt.subplot(1,3,i+1)
+#     plt.title(k)
+#     plt.plot(v)
+# plt.show()

@@ -1,11 +1,13 @@
 import cv2
 import numpy as np
 
-img = cv2.imread("../img/shapes.png")
+# img = cv2.imread("../img/shapes.png")
+img = cv2.imread('../img/fixed_mask_0.png')
 # 그레이 스케일 변환
 imgray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # 바이너리 스케일 변환
-ret, th = cv2.threshold(imgray, 127, 255, cv2.THRESH_BINARY_INV)
+# ret, th = cv2.threshold(imgray, 127, 255, cv2.THRESH_BINARY_INV)
+ret, th = cv2.threshold(imgray, 127, 255, cv2.THRESH_BINARY)
 # 컨투어 찾기
 img2, contours, hierachy = cv2.findContours(th, cv2.RETR_EXTERNAL, \
                                             cv2.CHAIN_APPROX_SIMPLE)

@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-import matplotlib.pylab as plt
+# import matplotlib.pylab as plt
 
 img = cv2.imread('../img/scaned_paper.jpg', cv2.IMREAD_GRAYSCALE) #이미지를 그레이 스케일로 읽기
 thresholds = [80, 100, 120, 140, 150, 170, 190]

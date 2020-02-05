@@ -2,17 +2,22 @@ import cv2
 import numpy as np
 
 # load masking image
-imgMaskSrc = '../img/imp_image/sample01/result_mask_1.png'
+# imgMaskSrc = '../img/imp_image/sample01/result_mask_1.png'
+imgMaskSrc = '../img/imp_image/data/result_mask_2.png'
+
 imgMask = cv2.imread(imgMaskSrc)
 imgMaskGray = cv2.cvtColor(imgMask, cv2.COLOR_BGR2GRAY)
 
 # load depth image
-imgDepthSrc = '../img/imp_image/sample01/result_norm_1.png'
+# imgDepthSrc = '../img/imp_image/sample01/result_norm_1.png'
+imgDepthSrc = '../img/imp_image/data/result_norm_2.png'
 imgDepth = cv2.imread(imgDepthSrc)
 imgDepthGray = cv2.cvtColor(imgDepth, cv2.COLOR_BGR2GRAY)
 
 # load object image
-imgRgbSrc = '../img/imp_image/sample01/result_rbg_1.png'
+# imgRgbSrc = '../img/imp_image/sample01/result_rbg_1.png'
+imgRgbSrc = '../img/imp_image/data/result_rbg_2.png'
+
 imgRgb = cv2.imread(imgRgbSrc)
 
 # Mask area coordinates
@@ -92,8 +97,6 @@ rateMedian = cntTrue / len(unMaskColList)
 print('median, cntTrue, rateMedian: ', np.median(maskColList), cntTrue, rateMedian)
 
 # visualization
-# cv2.imshow('imgDepth', imgDepth)
-# cv2.waitKey(0)
 
 for i, t in enumerate(boolMedian):
     if t:
@@ -107,8 +110,11 @@ for i, t in enumerate(boolMedian):
         imgDepth[x, y] = [0, 0, 255]
         imgRgb[x, y] = [0, 0, 255]
 
-cv2.imwrite('../img/imp_image/sample01/result_detect_1.png', imgDepth)
-cv2.imwrite('../img/imp_image/sample01/result_rgb_detect_1.png', imgRgb)
+cv2.imwrite('../img/imp_image/data/result_detect_2.png', imgDepth)
+cv2.imwrite('../img/imp_image/data/result_rgb_detect_2.png', imgRgb)
+
+# cv2.imwrite('../img/imp_image/sample01/result_detect_1.png', imgDepth)
+# cv2.imwrite('../img/imp_image/sample01/result_rgb_detect_1.png', imgRgb)
 
 
 print('end')

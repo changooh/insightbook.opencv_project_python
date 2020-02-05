@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 
 file_name = '../img/fish.jpg'
 img = cv2.imread(file_name)

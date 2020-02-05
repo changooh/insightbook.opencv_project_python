@@ -7,7 +7,9 @@ img2 = img.copy()
 # 바이너리 이미지로 변환
 imgray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 ret, imthres = cv2.threshold(imgray, 127, 255, cv2.THRESH_BINARY_INV)
-
+# ret, imthres = cv2.threshold(imgray, 127, 255, cv2.THRESH_BINARY)
+# cv2.imshow('threshold', imthres)
+# cv2.waitKey(0)
 # 가장 바깥 컨투어만 수집   --- ①
 im2, contour, hierarchy = cv2.findContours(imthres, cv2.RETR_EXTERNAL, \
                                                 cv2.CHAIN_APPROX_NONE)

@@ -1,12 +1,18 @@
 import cv2
 import numpy as np
-import matplotlib.pylab as plt
+# import matplotlib.pylab as plt
 
 #--① 그레이 스케일로 영상 읽기
-img = cv2.imread('../img/abnormal.jpg', cv2.IMREAD_GRAYSCALE)
+# img = cv2.imread('../img/abnormal.jpg', cv2.IMREAD_GRAYSCALE)
+img = cv2.imread('../img/imp_image/01_17_16_29_34_fix.png', cv2.IMREAD_GRAYSCALE)
+
+# 1280 533 1359 616
+# x=320; y=150; w=50; h=50
+roi = img[1280:1359, 533:616]     # roi 지정
+img2 = roi.copy()           # roi 배열 복제 ---①
 
 #--② 직접 연산한 정규화
-img_f = img.astype(np.float32)
+img_f = img2.astype(np.float32)
 img_norm = ((img_f - img_f.min()) * (255) / (img_f.max() - img_f.min()))
 img_norm = img_norm.astype(np.uint8)
 
@@ -22,10 +28,13 @@ cv2.imshow('Before', img)
 cv2.imshow('Manual', img_norm)
 cv2.imshow('cv2.normalize()', img_norm2)
 
-hists = {'Before' : hist, 'Manual':hist_norm, 'cv2.normalize()':hist_norm2}
-for i, (k, v) in enumerate(hists.items()):
-    plt.subplot(1,3,i+1)
-    plt.title(k)
-    plt.plot(v)
-plt.show()
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# hists = {'Before' : hist, 'Manual':hist_norm, 'cv2.normalize()':hist_norm2}
+# for i, (k, v) in enumerate(hists.items()):
+#     plt.subplot(1,3,i+1)
+#     plt.title(k)
+#     plt.plot(v)
+# plt.show()
 
