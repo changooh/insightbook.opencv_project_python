@@ -1,56 +1,35 @@
 import cv2
 import numpy as np
 import os
-from os.path import isdir, exists, join
+from os.path import isdir,exists,join
 
-# saved file names
-saveVisualRgbPng = "result_rbg_3.png"
-saveVisualDepthPng = "result_detect_3.png"
-saveInstanceNormPng = "result_norm_3.png"
-saveRgbPng = "result_rbg_3.png"
-saveMaskedInstancePng = "result_mask_3.png"
 
-# file path
 rootDir = os.getcwd()
-imgDir = join(rootDir, "img")
+
+imgDir = join(rootDir,"img")
+
 if exists(imgDir):
-    print("Dir exists")
-else:
     os.mkdir(imgDir)
 
 # fixed rbg
-imgFixRbgSrc = join(imgDir, "fixed_raw.jpg")
-if exists(imgFixRbgSrc):
-    print("imgFix exists")
-    imgRgbFixed = cv2.imread(imgFixRbgSrc)
-    # img_fix = "../img/imp_image/sample01/fixed_raw.jpg"
-else:
-    print("No such imgFix")
+img_fix = "../img/imp_image/data/crop_image_0.png"
+# img_fix = "../img/imp_image/sample01/fixed_raw.jpg"
+img0 = cv2.imread(img_fix)
 
 # fixed depth map
-imgFixDepthSrc = join(imgDir, "depth_fixed_raw.png")
-if exists(imgFixDepthSrc):
-    print("imgFixDepthSrc exists")
-    imgDepthFixed = cv2.imread(imgFixDepthSrc, -1)
-else:
-    print("No such imgFixDepthSrc")
+img9 = cv2.imread('../img/imp_image/data/crop_depth_0.png', -1)
+# img9 = cv2.imread('../img/imp_image/sample01/depth_fixed_raw.png', -1)
 
 # masked instance
-imgMaskInstanceSrc = join(imgDir, "fixed_mask_3.png")
-print(imgMaskInstanceSrc)
-
-if exists(imgMaskInstanceSrc):
-    print("imgMaskInstanceSrc exists")
-    imgMaskInstance = cv2.imread(imgMaskInstanceSrc)
-else:
-    print("No such imgMaskInstanceSrc")
+# img_src03 = '../img/imp_image/sample01/fixed_mask_1.png'
+# img_src03 = '../img/imp_image/01_17_16_29_34_fixed_mask_0.png'
+img_src03 = '../img/imp_image/data/crop_image_1_2.png'
 
 # 이미지 읽어서 그레이스케일 변환, 바이너리 스케일 변환
-imgMaskInstanceGray = cv2.cvtColor(imgMaskInstance, cv2.COLOR_BGR2GRAY)
+img = cv2.imread(img_src03)
+img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 # binary threshold
-ret, th = cv2.threshold(imgMaskInstanceGray, 200, 255, cv2.THRESH_BINARY)
-
-# get contours
+ret, th = cv2.threshold(img_gray, 200, 255, cv2.THRESH_BINARY)
 im, contours, hr = cv2.findContours(th, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 contr = contours[0]
 # inner coordinate
@@ -75,47 +54,43 @@ print("outer coordinates: ", x_outer01, y_outer01, x_outer02, y_outer02)
 # cv2.rectangle(img, (x_outer01, y_outer01), (x_outer02, y_outer02), (255, 0, 0), 1)
 
 # instance mask roi 지정
-imgMaskInstanceRoi = th[y_outer01:y_outer02, x_outer01:x_outer02]
-imgMaskInstanceRet = imgMaskInstanceRoi.copy()  # roi array 복제 ---①
-saveMaskedInstancePath = join(imgDir, saveMaskedInstancePng)
+roi = img[y_outer01:y_outer02, x_outer01:x_outer02]
+imgMaskGray = roi.copy()  # roi array 복제 ---①
 # cv2.imwrite('../img/imp_image/sample01/result_mask_1.png', imgMaskGray)
-cv2.imwrite(saveMaskedInstancePath, imgMaskInstanceRet)
+cv2.imwrite('../img/imp_image/data/result_mask_2.png', imgMaskGray)
 
-# raw image roi 지정
-# print(roi0.shape)
-imgRgbFixedRoi = imgRgbFixed[y_outer01:y_outer02, x_outer01:x_outer02]
+# raw image roi 지정 # print(roi0.shape)
+roi0 = img0[y_outer01:y_outer02, x_outer01:x_outer02]
 # roi array copy
-imgRgbFixedRet = imgRgbFixedRoi.copy()
-
-saveRgbFixedRetPath = join(imgDir, saveRgbPng)
-cv2.imwrite(saveRgbFixedRetPath, imgRgbFixedRet)
+imgRgb = roi0.copy()
+cv2.imwrite('../img/imp_image/data/result_rbg_2.png', imgRgb)
 
 # instance depth roi
-imgDepthInstanceRoi = imgDepthFixed[y_outer01:y_outer02, x_outer01:x_outer02]  # depth roi 지정
-imgInstanceNormalSrc = imgDepthInstanceRoi.copy()  # roi array 복제
+roi = img9[y_outer01:y_outer02, x_outer01:x_outer02]  # depth roi 지정
+img3 = roi.copy()  # roi array 복제
 # cv2.imwrite('../img/imp_image/sample01/result_depth_60.png', img*60)
 
 #  정규화
-imgInstanceBlurSrc = cv2.normalize(imgInstanceNormalSrc, None, 255, 255 * 255, cv2.NORM_MINMAX)
-# img_norm1 = cv2.normalize(imimgInstanceNormalSrcg3, None, 1, 50, cv2.NORM_MINMAX)
-# img_norm1= cv2.normalize(imgimgInstanceNormalSrc3, None, 1, 255, cv2.NORM_MINMAX)
+img_norm1 = cv2.normalize(img3, None, 255, 255 * 255, cv2.NORM_MINMAX)
+# img_norm1 = cv2.normalize(img3, None, 1, 50, cv2.NORM_MINMAX)
+# img_norm1= cv2.normalize(img3, None, 1, 255, cv2.NORM_MINMAX)
 
 # median 블러 API
-imgInstanceNormalRet = cv2.medianBlur(imgInstanceBlurSrc, 5)
-# imgInstanceNormalRet = imgInstanceBlurSrc
+imgDepth = cv2.medianBlur(img_norm1, 5)
 
 # 결과 image save
 # merged = np.hstack((img_norm2, blur, blur2))
-saveInstanceNormPath = join(imgDir, saveInstanceNormPng)
-cv2.imwrite(saveInstanceNormPath, imgInstanceNormalRet)
+cv2.imwrite('../img/imp_image/data/result_norm_2.png', imgDepth)
+# cv2.imwrite('../img/imp_image/img_norm2_3.png', img_norm2)
+# cv2.imwrite('../img/imp_image/img_media_2.png', blur)
 
 # Mask area coordinates
-maskIndices = np.where(imgMaskInstanceRet == [255])
+maskIndices = np.where(imgMaskGray == [255])
 # coordinates list [0] - x axis - height, [1] -y axis - width
 maskCoordinates = np.array(list(zip(maskIndices[0], maskIndices[1])))
 
 # unMask area coordinates
-unMaskIndices = np.where(imgMaskInstanceRet != [255])
+unMaskIndices = np.where(imgMaskGray != [255])
 # coordinates list [0] - x axis - height, [1] -y axis - width
 unMaskCoordinates = np.array(list(zip(unMaskIndices[0], unMaskIndices[1])))
 
@@ -131,7 +106,7 @@ for i, xy in enumerate(maskCoordinates):
     if i == breakPoint:
         break
     else:
-        depthValue = imgInstanceNormalRet[xy[0], xy[1]]
+        depthValue = imgDepth[xy[0], xy[1]]
         maskColList.append(depthValue)
 
 # print(newColList)
@@ -158,7 +133,7 @@ for i, xy in enumerate(unMaskCoordinates):
     if i == breakPoint:
         break
     else:
-        depthValue = imgInstanceNormalRet[xy[0], xy[1]]
+        depthValue = imgDepth[xy[0], xy[1]]
         unMaskColList.append(depthValue)
 
 # print(newColList)
@@ -184,24 +159,23 @@ rateMedian = cntTrue / len(unMaskColList)
 print('median, cntTrue, rateMedian: ', np.median(maskColList), cntTrue, rateMedian)
 
 #  visualization start
-viewDepth = cv2.cvtColor(imgInstanceNormalRet, cv2.COLOR_GRAY2BGR)
+viewDepth = cv2.cvtColor(imgDepth, cv2.COLOR_GRAY2BGR)
 for i, t in enumerate(boolMedian):
     if t:
         x, y = unMaskCoordinates[i, :]
         viewDepth[x, y] = [0, 255, 0]
-        imgRgbFixedRet[x, y] = [0, 255, 0]
+        imgRgb[x, y] = [0, 255, 0]
 
         # break
     else:
         x, y = unMaskCoordinates[i, :]
         viewDepth[x, y] = [0, 0, 255]
-        imgRgbFixedRet[x, y] = [0, 0, 255]
+        imgRgb[x, y] = [0, 0, 255]
 
-saveVisualDepthPath = join(imgDir, saveVisualDepthPng)
-cv2.imwrite(saveVisualDepthPath, viewDepth)
-
-saveVisualRgbPngPath = join(imgDir, saveVisualRgbPng)
-cv2.imwrite(saveVisualRgbPngPath, imgRgbFixedRet)
+# cv2.imwrite('../img/imp_image/sample01/result_detect_1.png', imgDepth)
+# cv2.imwrite('../img/imp_image/sample01/result_rgb_detect_1.png', imgRgb)
+cv2.imwrite('../img/imp_image/data/result_detect_2.png', viewDepth)
+cv2.imwrite('../img/imp_image/data/result_rgb_detect_2.png', imgRgb)
 # visualization end
 
 print('end')
