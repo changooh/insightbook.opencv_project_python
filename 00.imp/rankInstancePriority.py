@@ -79,7 +79,7 @@ def loadMaskedInstance(paraPass, imgDir, paraPx=0):
                     # instance mask roi 지정
                     imgMaskInstanceRoi = th[y_outer01:y_outer02, x_outer01:x_outer02]
                     imgMaskInstanceRet = imgMaskInstanceRoi.copy()  # roi array 복제 ---①
-                    maskData = (imgMaskInstanceRet, (y_outer01, y_outer02,x_outer01, x_outer02))
+                    maskData = (imgMaskInstanceRet, (y_outer01, y_outer02, x_outer01, x_outer02))
                     dataList.append(maskData)
                     print("end")
 
@@ -183,10 +183,10 @@ def rankFreeInstance(imgDepth, maskDataList):
 
     return rankInstList
 
-# RUN FUNCTIONS
-isPass, srcFilePath = conFilePath()
-isPass, imgDepthFixed = loadFixedDepth(isPass, srcFilePath)
-# px = 10
-isPass, maskInstanceList = loadMaskedInstance(isPass, srcFilePath, paraPx=10)
-rankInstanceList = rankFreeInstance(imgDepthFixed, maskInstanceList)
-print(rankInstanceList)
+if __name__ == '__main__':
+    # RUN FUNCTIONS
+    isPass, srcFilePath = conFilePath()
+    isPass, imgDepthFixed = loadFixedDepth(isPass, srcFilePath)
+    isPass, maskInstanceList = loadMaskedInstance(isPass, srcFilePath, paraPx=10)
+    rankInstanceList = rankFreeInstance(imgDepthFixed, maskInstanceList)
+    print(rankInstanceList)
